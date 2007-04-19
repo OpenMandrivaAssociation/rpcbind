@@ -1,12 +1,13 @@
 Summary:	Universal Addresses to RPC Program Number Napper
 Name:		rpcbind
 Version:	0.1.4
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL
 Group:		System/Servers
 URL:		http://nfsv4.bullopensource.org
 Source0:	http://nfsv4.bullopensource.org/tarballs/rpcbind/rpcbind-0.1.4.tar.bz2
 Source1:	rpcbind.init
+Source2:	rpcbind.sysconfig
 Patch1:		rpcbind-0.1.4-compile.patch
 Patch2:		rpcbind-0.1.4-debug.patch
 Patch3:		rpcbind-0.1.4-warmstarts.patch
@@ -15,7 +16,9 @@ BuildRequires:	libtool
 BuildRequires:	libtirpc-devel >= 0.1.7
 BuildRequires:	quota
 Provides:	portmap = %{version}-%{release}
-Obsoletes:	portmap <= 4.0-65.3
+Obsoletes:	portmap <= 4.0
+Requires(post): rpm-helper
+Requires(preun): rpm-helper
 BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
@@ -31,6 +34,10 @@ calls on a server on that machine.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+
+cp %{SOURCE1} .
+cp %{SOURCE2} .
+
 
 %build
 %ifarch s390 s390x
@@ -55,19 +62,19 @@ autoreconf -fisv
 
 %make all
 
-
 %install
 rm -rf %{buildroot}
 
+install -d %{buildroot}%{_sysconfdir}/sysconfig
 install -d %{buildroot}%{_initrddir}
 install -d %{buildroot}/sbin
-install -d %{buildroot}%{_sbindir}
 install -d %{buildroot}%{_localstatedir}/%{name}
 install -d %{buildroot}%{_mandir}/man8
 
 install -m0755 src/rpcbind %{buildroot}/sbin
-install -m0755 src/rpcinfo %{buildroot}%{_sbindir}
-install -m0755 %{SOURCE1} %{buildroot}%{_initrddir}/rpcbind
+install -m0755 src/rpcinfo %{buildroot}/sbin
+install -m0755 rpcbind.init %{buildroot}%{_initrddir}/rpcbind
+install -m0644 rpcbind.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
 install -m0644 man/rpcbind.8 %{buildroot}%{_mandir}/man8
 install -m0644 man/rpcinfo.8 %{buildroot}%{_mandir}/man8
 
@@ -78,25 +85,25 @@ install -m0644 man/rpcinfo.8 %{buildroot}%{_mandir}/man8
 %{_sbindir}/groupdel rpc 2> /dev/null || : 
 
 # Now re-add the rpc uid/gid
-%{_sbindir}/groupadd -g 32 rpc > /dev/null 2>&1
-%{_sbindir}/useradd -l -c "Rpcbind Daemon" -d %{_localstatedir}/%{name} -g 32 \
-    -M -s /sbin/nologin -u 32 rpc > /dev/null 2>&1
+%_pre_useradd rpc %{_localstatedir}/%{name} /sbin/nologin
 
 %post 
-/sbin/chkconfig --add %{name}
+%_post_service %{name}
 
 %preun
 if [ $1 -eq 0 ]; then
-    service rpcbind stop > /dev/null 2>&1
-    /sbin/chkconfig --del %{name}
-	%{_sbindir}/userdel  rpc 2>/dev/null || :
-	%{_sbindir}/groupdel rpc 2>/dev/null || :
-	rm -rf /var/lib/rpcbind
+    service %{name} stop > /dev/null 2>&1
+%_preun_service %{name}
+    %{_sbindir}/userdel  rpc 2>/dev/null || :
+    %{_sbindir}/groupdel rpc 2>/dev/null || :
+    rm -rf /var/lib/rpcbind
 fi
+
 %postun
 if [ "$1" -ge "1" ]; then
-    service rpcbind condrestart > /dev/null 2>&1
+    service %{name} condrestart > /dev/null 2>&1
 fi
+%_postun_userdel rpc
 
 %clean
 rm -rf %{buildroot}
@@ -104,8 +111,9 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog README
-%{_initrddir}/rpcbind
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
+%attr(0755,root,root) %{_initrddir}/rpcbind
 /sbin/rpcbind
-%{_sbindir}/rpcinfo
+/sbin/rpcinfo
 %{_mandir}/man8/*
 %dir %attr(0700,rpc,rpc) %{_localstatedir}/%{name}
