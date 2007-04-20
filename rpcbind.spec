@@ -1,7 +1,7 @@
 Summary:	Universal Addresses to RPC Program Number Napper
 Name:		rpcbind
 Version:	0.1.4
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPL
 Group:		System/Servers
 URL:		http://nfsv4.bullopensource.org
@@ -75,8 +75,18 @@ install -m0755 src/rpcbind %{buildroot}/sbin
 install -m0755 src/rpcinfo %{buildroot}/sbin
 install -m0755 rpcbind.init %{buildroot}%{_initrddir}/rpcbind
 install -m0644 rpcbind.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
-install -m0644 man/rpcbind.8 %{buildroot}%{_mandir}/man8
-install -m0644 man/rpcinfo.8 %{buildroot}%{_mandir}/man8
+install -m0644 man/rpcbind.8 %{buildroot}%{_mandir}/man8/rpcbind.8
+install -m0644 man/rpcinfo.8 %{buildroot}%{_mandir}/man8/rpcbind-rpcinfo.8
+
+cat > README.urpmi << EOF
+
+Because of file conflicts with glibc the following files has been renamed:
+
+rpcinfo.8 -> rpcbind-rpcinfo.8
+
+glibc also provides rpcinfo as /usr/sbin/rpcinfo, so the rpcinfo program
+provided with this package is put in /sbin/rpcinfo
+EOF
 
 %pre
 # if the rpc uid and gid is left over from the portmapper
@@ -110,7 +120,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS ChangeLog README
+%doc AUTHORS ChangeLog README README.urpmi
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
 %attr(0755,root,root) %{_initrddir}/rpcbind
 /sbin/rpcbind
