@@ -1,7 +1,7 @@
-Summary:	Universal Addresses to RPC Program Number Napper
 Name:		rpcbind
 Version:	0.1.4
-Release:	%mkrel 4
+Release:	%mkrel 5
+Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
 URL:		http://nfsv4.bullopensource.org
@@ -15,11 +15,10 @@ Patch4:		rpcbind-0.1.4-rpcuser.patch
 BuildRequires:	libtool
 BuildRequires:	libtirpc-devel >= 0.1.7
 BuildRequires:	quota
-Provides:	portmap = %{version}-%{release}
-Obsoletes:	portmap <= 4.0
+Provides:	    portmapper
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+BuildRoot:      %{_tmppath}/%{name}-%{version}
 
 %description
 The rpcbind utility is a server that converts RPC program numbers into
@@ -27,7 +26,6 @@ universal addresses.  It must be running on the host to be able to make RPC
 calls on a server on that machine.
 
 %prep
-
 %setup -q
 
 %patch1 -p1
@@ -40,24 +38,11 @@ cp %{SOURCE2} .
 
 
 %build
-%ifarch s390 s390x
-PIE="-fPIE"
-%else
-PIE="-fpie"
-%endif
-export PIE
-
-RPCBUSR=rpc
-RPCBDIR=%{_localstatedir}/%{name}
-CFLAGS="`echo $RPM_OPT_FLAGS $ARCH_OPT_FLAGS $PIE`"
-
-autoreconf -fisv
-
 %configure2_5x \
-    CFLAGS="$CFLAGS" LDFLAGS="-pie" \
+    CFLAGS="%optflags -fpie" LDFLAGS="-pie" \
     --enable-warmstarts \
-    --with-statedir="$RPCBDIR" \
-    --with-rpcuser="$RPCBUSR" \
+    --with-statedir="%{_localstatedir}/%{name}" \
+    --with-rpcuser="rpc" \
     --enable-debug
 
 %make all
