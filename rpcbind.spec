@@ -1,6 +1,6 @@
 Name:		rpcbind
 Version:	0.1.4
-Release:	%mkrel 5
+Release:	%mkrel 6
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
@@ -38,8 +38,10 @@ cp %{SOURCE2} .
 
 
 %build
+%serverbuild
+
 %configure2_5x \
-    CFLAGS="%optflags -fpie" LDFLAGS="-pie" \
+    CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie" \
     --enable-warmstarts \
     --with-statedir="%{_localstatedir}/%{name}" \
     --with-rpcuser="rpc" \
