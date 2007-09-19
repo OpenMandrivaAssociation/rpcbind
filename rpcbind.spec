@@ -26,7 +26,7 @@ Patch7:         rpcbind-0.1.4-setgid.patch
 # which are mode 0600/0700 for example
 Patch8:         rpcbind-0.1.4-movewarmstart.patch
 BuildRequires:	libtool
-BuildRequires:	libtirpc-devel >= 0.1.7
+BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
 Provides:	    portmapper
 Requires(post): rpm-helper
