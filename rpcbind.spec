@@ -1,6 +1,6 @@
 Name:		rpcbind
 Version:	0.1.4
-Release:	%mkrel 7
+Release:	%mkrel 8
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
@@ -28,7 +28,8 @@ Patch8:         rpcbind-0.1.4-movewarmstart.patch
 BuildRequires:	libtool
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
-Provides:	    portmapper
+Provides:	portmapper
+Conflicts:      apparmor-profiles < 2.1-1.961.4mdv2008.0
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
 BuildRoot:      %{_tmppath}/%{name}-%{version}
