@@ -126,8 +126,8 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc AUTHORS ChangeLog README README.urpmi
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
-%attr(0755,root,root) %{_initrddir}/rpcbind
+%{_initrddir}/rpcbind
+%config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
 %config(noreplace) %{_sysconfdir}/apparmor.d/sbin.rpcbind
 /sbin/rpcbind
 /sbin/rpcinfo
