@@ -112,11 +112,7 @@ for service in amd autofs bootparamd clusternfs mcserv \
 done
 
 %preun
-if [ $1 -eq 0 ]; then
-    service %{name} stop > /dev/null 2>&1
 %_preun_service %{name}
-    rm -rf /var/lib/rpcbind
-fi
 
 %posttrans
 # if we have apparmor installed, reload if it's being used
