@@ -25,7 +25,6 @@ Patch7:         rpcbind-0.1.4-setgid.patch
 # basically what allow root to read files/dirs from other users
 # which are mode 0600/0700 for example
 Patch8:         rpcbind-0.1.4-movewarmstart.patch
-BuildRequires:	libtool
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
 Provides:	portmapper
