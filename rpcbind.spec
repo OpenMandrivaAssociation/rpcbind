@@ -102,6 +102,14 @@ install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 
 %post 
 %_post_service %{name}
+# restart running services depending on portmapper
+for service in amd autofs bootparamd clusternfs mcserv \
+               nfs-common nfs-server \
+               ypserv ypbind yppasswdd ypxfrd; do
+    if [ -f /var/lock/subsys/$service ]; then
+        /sbin/service $service restart > /dev/null 2>/dev/null || :
+    fi
+done
 
 %preun
 if [ $1 -eq 0 ]; then
