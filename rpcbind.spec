@@ -31,6 +31,7 @@ Provides:	portmapper
 Conflicts:      apparmor-profiles < 2.1-1.961.4mdv2008.0
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
+BuildRoot:      %{_tmppath}/%{name}-%{version}
 
 %description
 The rpcbind utility is a server that converts RPC program numbers into
