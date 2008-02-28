@@ -1,6 +1,6 @@
 Name:		rpcbind
 Version:	0.1.4
-Release:	%mkrel 9
+Release:	%mkrel 10
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
@@ -25,6 +25,7 @@ Patch7:         rpcbind-0.1.4-setgid.patch
 # basically what allow root to read files/dirs from other users
 # which are mode 0600/0700 for example
 Patch8:         rpcbind-0.1.4-movewarmstart.patch
+Patch9:         rpcbind-0.1.4-fix-crash-with-ipv6-disabled.patch
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
 Provides:	portmapper
@@ -49,6 +50,7 @@ calls on a server on that machine.
 %patch6 -p1 -b .errno
 %patch7 -p1 -b .setgid
 %patch8 -p1 -b .movewarmstart
+%patch9 -p1 -b .ipv6
 
 cp %{SOURCE1} .
 cp %{SOURCE2} .
