@@ -62,7 +62,7 @@ cp %{SOURCE2} .
 %configure2_5x \
     CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie" \
     --enable-warmstarts \
-    --with-statedir="%{_localstatedir}/%{name}" \
+    --with-statedir="%{_localstatedir}/lib/%{name}" \
     --with-rpcuser="rpc" \
     --enable-debug
 
@@ -74,7 +74,7 @@ rm -rf %{buildroot}
 install -d %{buildroot}%{_sysconfdir}/sysconfig
 install -d %{buildroot}%{_initrddir}
 install -d %{buildroot}/sbin
-install -d %{buildroot}%{_localstatedir}/%{name}
+install -d %{buildroot}%{_localstatedir}/lib/%{name}
 install -d %{buildroot}%{_mandir}/man8
 
 install -m0755 src/rpcbind %{buildroot}/sbin
@@ -99,7 +99,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/apparmor.d
 install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 
 %pre
-%_pre_useradd rpc %{_localstatedir}/%{name} /sbin/nologin
+%_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
 
 %post 
 %_post_service %{name}
@@ -133,4 +133,4 @@ rm -rf %{buildroot}
 /sbin/rpcbind
 /sbin/rpcinfo
 %{_mandir}/man8/*
-%dir %attr(0700,rpc,rpc) %{_localstatedir}/%{name}
+%dir %attr(0700,rpc,rpc) %{_localstatedir}/lib/%{name}
