@@ -1,31 +1,24 @@
 Name:		rpcbind
-Version:	0.1.4
-Release:	%mkrel 11
+Version:	0.1.5
+Release:	%mkrel 1
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
 URL:		http://nfsv4.bullopensource.org
-Source0:	http://nfsv4.bullopensource.org/tarballs/rpcbind/rpcbind-0.1.4.tar.bz2
+Source0:	http://nfsv4.bullopensource.org/tarballs/rpcbind/%{name}-%{version}.tar.bz2
 Source1:	rpcbind.init
 Source2:	rpcbind.sysconfig
-Source3:        sbin.rpcbind.apparmor
-Patch1:		rpcbind-0.1.4-compile.patch
-Patch2:		rpcbind-0.1.4-debug.patch
-Patch3:		rpcbind-0.1.4-warmstarts.patch
-Patch4:		rpcbind-0.1.4-rpcuser.patch
-# http://qa.mandriva.com/show_bug.cgi?id=31465
-Patch5:         rpcbind-0.1.4-warmstartperms.patch
-# some better logging
-Patch6:         rpcbind-0.1.4-errno.patch
+Source3:    sbin.rpcbind.apparmor
 # also switch to unprivileged group
-Patch7:         rpcbind-0.1.4-setgid.patch
+Patch1:     rpcbind-0.1.4-setgid.patch
+# fix a crash when ipv6 is disabled
+Patch2:     rpcbind-0.1.4-fix-crash-with-ipv6-disabled.patch
 # move warm start read call to after we switched uid/gid, or
 # else we need to add the dac_read_search and dac_override
 # capabilities to the apparmor profile. These capabilities are
 # basically what allow root to read files/dirs from other users
 # which are mode 0600/0700 for example
-Patch8:         rpcbind-0.1.4-movewarmstart.patch
-Patch9:         rpcbind-0.1.4-fix-crash-with-ipv6-disabled.patch
+Patch3:     rpcbind-0.1.4-movewarmstart.patch
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
 Provides:	portmapper
@@ -42,15 +35,9 @@ calls on a server on that machine.
 %prep
 %setup -q
 
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1 -b .orig
-%patch6 -p1 -b .errno
-%patch7 -p1 -b .setgid
-%patch8 -p1 -b .movewarmstart
-%patch9 -p1 -b .ipv6
+%patch1 -p1 -b .setgid
+%patch2 -p1 -b .ipv6
+#%patch2 -p1 -b .movewarmstart
 
 cp %{SOURCE1} .
 cp %{SOURCE2} .
