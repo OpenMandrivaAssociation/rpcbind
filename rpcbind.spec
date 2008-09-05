@@ -1,6 +1,6 @@
 Name:		rpcbind
 Version:	0.1.5
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
