@@ -1,24 +1,14 @@
 Name:		rpcbind
-Version:	0.1.5
-Release:	%mkrel 3
+Version:	0.1.7
+Release:	%mkrel 1
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
-URL:		http://nfsv4.bullopensource.org
-Source0:	http://nfsv4.bullopensource.org/tarballs/rpcbind/%{name}-%{version}.tar.bz2
+URL:		http://rpcbind.sourceforge.net/
+Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
 Source1:	rpcbind.init
 Source2:	rpcbind.sysconfig
 Source3:    sbin.rpcbind.apparmor
-# also switch to unprivileged group
-Patch1:     rpcbind-0.1.4-setgid.patch
-# fix a crash when ipv6 is disabled
-Patch2:     rpcbind-0.1.4-fix-crash-with-ipv6-disabled.patch
-# move warm start read call to after we switched uid/gid, or
-# else we need to add the dac_read_search and dac_override
-# capabilities to the apparmor profile. These capabilities are
-# basically what allow root to read files/dirs from other users
-# which are mode 0600/0700 for example
-Patch3:     rpcbind-0.1.4-movewarmstart.patch
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
 Provides:	portmapper
@@ -34,14 +24,8 @@ calls on a server on that machine.
 
 %prep
 %setup -q
-
-%patch1 -p1 -b .setgid
-%patch2 -p1 -b .ipv6
-#%patch2 -p1 -b .movewarmstart
-
 cp %{SOURCE1} .
 cp %{SOURCE2} .
-
 
 %build
 %serverbuild
