@@ -1,6 +1,6 @@
 Name:		rpcbind
 Version:	0.1.7
-Release:	%mkrel 1
+Release:	%mkrel 2
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
@@ -11,7 +11,7 @@ Source2:	rpcbind.sysconfig
 Source3:    sbin.rpcbind.apparmor
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
-Provides:	portmapper
+Obsoletes:	    portmap
 Conflicts:      apparmor-profiles < 2.1-1.961.4mdv2008.0
 Requires(post): rpm-helper
 Requires(preun): rpm-helper
