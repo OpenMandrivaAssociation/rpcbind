@@ -1,5 +1,2 @@
 sources:
-  "rpcbind-0.2.0.tar.bz2:"	02f077372a76a8f9adfa696004aa437212c28617
-  "rpcbind.init:"	10be7033b11e1b154fca97f0d289703574273c37
-  "rpcbind.sysconfig:"	a182a05b4f8642ae22e2c31ada6a74a890f8197f
-  "sbin.rpcbind.apparmor:"	ec8d2a80bd6bac6b4e06bc8924deb0a293120e1c
+  "rpcbind-0.2.0.tar.bz2": 02f077372a76a8f9adfa696004aa437212c28617

@@ -1,0 +1,23 @@
+# vim:syntax=apparmor
+# Last Modified: Fri Jun 15 16:37:54 2007
+#include <tunables/global>
+
+/sbin/rpcbind {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  capability net_bind_service,
+  capability setuid,
+  capability setgid,
+
+  /sbin/rpcbind mr,
+  /etc/rpc r,
+  /etc/netconfig r,
+  /var/run/rpcbind.lock rwk,
+  /var/run/rpcbind.sock rw,
+  /var/lib/rpcbind/rpcbind.file rw,
+  /var/lib/rpcbind/portmap.file rw,
+  @{PROC}/net/ r,
+  @{PROC}/net/unix r,
+
+}
