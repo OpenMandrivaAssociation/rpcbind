@@ -1,6 +1,6 @@
 Name:		rpcbind
 Version:	0.2.0
-Release:	%mkrel 6
+Release:	7
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
@@ -8,14 +8,13 @@ URL:		http://rpcbind.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
 Source1:	rpcbind.init
 Source2:	rpcbind.sysconfig
-Source3:    sbin.rpcbind.apparmor
+Source3:	sbin.rpcbind.apparmor
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
-Obsoletes:	    portmap
-Conflicts:      apparmor-profiles < 2.1-1.961.4mdv2008.0
-Requires(post): rpm-helper
-Requires(preun): rpm-helper
-BuildRoot:      %{_tmppath}/%{name}-%{version}
+Obsoletes:		portmap
+Conflicts:		apparmor-profiles < 2.1-1.961.4mdv2008.0
+Requires(post):	rpm-helper
+Requires(preun):	rpm-helper
 
 %description
 The rpcbind utility is a server that converts RPC program numbers into
@@ -40,7 +39,6 @@ cp %{SOURCE2} .
 %make all
 
 %install
-rm -rf %{buildroot}
 
 install -d %{buildroot}%{_sysconfdir}/sysconfig
 install -d %{buildroot}%{_initrddir}
@@ -92,8 +90,6 @@ if [ -x /sbin/apparmor_parser ]; then
         /sbin/service apparmor condreload
 fi
 
-%clean
-rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
