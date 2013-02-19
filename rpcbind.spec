@@ -89,8 +89,7 @@ fi
 
 
 %files
-%defattr(-,root,root)
-%doc AUTHORS ChangeLog README README.urpmi
+%doc AUTHORS COPYING ChangeLog README README.urpmi
 %{_initrddir}/rpcbind
 %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
 %config(noreplace) %{_sysconfdir}/apparmor.d/sbin.rpcbind
