@@ -70,11 +70,11 @@ install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 %_post_service %{name}
 # restart running services depending on portmapper
 for service in amd autofs bootparamd clusternfs mcserv \
-               nfs-common nfs-server \
-               ypserv ypbind yppasswdd ypxfrd; do
-    if [ -f /var/lock/subsys/$service ]; then
-        /sbin/service $service restart > /dev/null 2>/dev/null || :
-    fi
+		nfs-common nfs-server \
+		ypserv ypbind yppasswdd ypxfrd; do
+	if [ -f /var/lock/subsys/$service ]; then
+		/sbin/service $service restart > /dev/null 2>/dev/null || :
+	fi
 done
 
 %preun
@@ -83,9 +83,8 @@ done
 %posttrans
 # if we have apparmor installed, reload if it's being used
 if [ -x /sbin/apparmor_parser ]; then
-        /sbin/service apparmor condreload
+	/sbin/service apparmor condreload
 fi
-
 
 %files
 %doc AUTHORS COPYING ChangeLog README README.urpmi
@@ -96,7 +95,6 @@ fi
 /sbin/rpcinfo
 %{_mandir}/man8/*
 %dir %attr(0700,rpc,rpc) %{_localstatedir}/lib/%{name}
-
 
 %changelog
 * Mon Feb 20 2012 abf
