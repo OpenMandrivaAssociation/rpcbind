@@ -2,7 +2,7 @@ Name:		rpcbind
 Version:	0.2.0
 Release:	8
 Summary:	Universal Addresses to RPC Program Number Napper
-License:	GPL
+License:	BSD
 Group:		System/Servers
 URL:		http://rpcbind.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
