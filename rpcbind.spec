@@ -32,7 +32,7 @@ cp %{SOURCE2} .
 %serverbuild
 
 %configure2_5x \
-    CFLAGS="$RPM_OPT_FLAGS -fpie" LDFLAGS="-pie" \
+    CFLAGS="%{optflags} -fpie" LDFLAGS="-pie" \
     --enable-warmstarts \
     --with-statedir="%{_localstatedir}/lib/%{name}" \
     --with-rpcuser="rpc" \
@@ -61,8 +61,7 @@ provided with this package is put in /sbin/rpcinfo
 EOF
 
 # apparmor profile
-mkdir -p %{buildroot}%{_sysconfdir}/apparmor.d
-install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
+install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 
 %pre
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
