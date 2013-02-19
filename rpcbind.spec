@@ -1,6 +1,6 @@
 Name:		rpcbind
 Version:	0.2.0
-Release:	7
+Release:	8
 Summary:	Universal Addresses to RPC Program Number Napper
 License:	GPL
 Group:		System/Servers
@@ -12,10 +12,10 @@ Source3:	sbin.rpcbind.apparmor
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
-Obsoletes:		portmap
-Conflicts:		apparmor-profiles < 2.1-1.961.4mdv2008.0
+Obsoletes:	portmap
+Conflicts:	apparmor-profiles < 2.1-1.961.4mdv2008.0
 Requires(post):	rpm-helper
-Requires(preun):	rpm-helper
+Requires(preun):rpm-helper
 
 %description
 The rpcbind utility is a server that converts RPC program numbers into
@@ -41,19 +41,14 @@ cp %{SOURCE2} .
 %make all
 
 %install
-
-install -d %{buildroot}%{_sysconfdir}/sysconfig
-install -d %{buildroot}%{_initrddir}
-install -d %{buildroot}/sbin
 install -d %{buildroot}%{_localstatedir}/lib/%{name}
-install -d %{buildroot}%{_mandir}/man8
 
-install -m0755 src/rpcbind %{buildroot}/sbin
-install -m0755 src/rpcinfo %{buildroot}/sbin
-install -m0755 rpcbind.init %{buildroot}%{_initrddir}/rpcbind
-install -m0644 rpcbind.sysconfig %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
-install -m0644 man/rpcbind.8 %{buildroot}%{_mandir}/man8/rpcbind.8
-install -m0644 man/rpcinfo.8 %{buildroot}%{_mandir}/man8/rpcbind-rpcinfo.8
+install -m755 src/rpcbind -D %{buildroot}/sbin/rpcbind
+install -m755 src/rpcinfo -D %{buildroot}/sbin/rpcinfo
+install -m755 rpcbind.init -D %{buildroot}%{_initrddir}/rpcbind
+install -m644 rpcbind.sysconfig -D %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
+install -m644 man/rpcbind.8 -D %{buildroot}%{_mandir}/man8/rpcbind.8
+install -m644 man/rpcinfo.8 -D %{buildroot}%{_mandir}/man8/rpcbind-rpcinfo.8
 
 cat > README.urpmi << EOF
 
