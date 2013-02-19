@@ -9,6 +9,7 @@ Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
 Source1:	rpcbind.init
 Source2:	rpcbind.sysconfig
 Source3:	sbin.rpcbind.apparmor
+Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
 Obsoletes:		portmap
@@ -25,6 +26,7 @@ calls on a server on that machine.
 %setup -q
 cp %{SOURCE1} .
 cp %{SOURCE2} .
+%patch0 -p1 -b .noyp~
 
 %build
 %serverbuild
