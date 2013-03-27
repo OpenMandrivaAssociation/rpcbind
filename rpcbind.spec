@@ -29,6 +29,9 @@ cp %{SOURCE2} .
 %patch0 -p1 -b .noyp~
 
 %build
+#fix build with new automake
+sed -i -e 's,AM_CONFIG_HEADER,AC_CONFIG_HEADERS,g' configure.*
+autoreconf -fi
 %serverbuild
 
 %configure2_5x \
