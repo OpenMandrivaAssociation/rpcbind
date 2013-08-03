@@ -1,15 +1,18 @@
 Name:		rpcbind
 Version:	0.2.0
 Release:	8
-Summary:	Universal Addresses to RPC Program Number Napper
+Summary:	Universal Addresses to RPC Program Number Mapper
 License:	BSD
 Group:		System/Servers
 URL:		http://rpcbind.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
-Source1:	rpcbind.init
+Source1: 	rpcbind.service
 Source2:	rpcbind.sysconfig
 Source3:	sbin.rpcbind.apparmor
+Source4: 	rpcbind.socket
+
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
+
 BuildRequires:	tirpc-devel >= 0.1.7
 BuildRequires:	quota
 Obsoletes:	portmap
@@ -26,6 +29,7 @@ calls on a server on that machine.
 %setup -q
 cp %{SOURCE1} .
 cp %{SOURCE2} .
+cp %{SOURCE4} .
 %patch0 -p1 -b .noyp~
 
 %build
@@ -44,11 +48,12 @@ autoreconf -fi
 %make all
 
 %install
+mkdir -p %{buildroot}%{_unitdir}
 install -d %{buildroot}%{_localstatedir}/lib/%{name}
-
 install -m755 src/rpcbind -D %{buildroot}/sbin/rpcbind
 install -m755 src/rpcinfo -D %{buildroot}/sbin/rpcinfo
-install -m755 rpcbind.init -D %{buildroot}%{_initrddir}/rpcbind
+install -m644 %{SOURCE1} %{buildroot}%{_unitdir}
+install -m644 %{SOURCE4} %{buildroot}%{_unitdir}
 install -m644 rpcbind.sysconfig -D %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
 install -m644 man/rpcbind.8 -D %{buildroot}%{_mandir}/man8/rpcbind.8
 install -m644 man/rpcinfo.8 -D %{buildroot}%{_mandir}/man8/rpcbind-rpcinfo.8
@@ -70,6 +75,22 @@ install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
 
 %post 
+if [ $1 -gt 1 ] ; then 
+#Need to clean up old init setup
+    if [ -e /etc/init.d/rpcbind ]
+    then
+      /etc/init.d/rpcbind stop
+      /bin/rm -f /etc/init.d/rpcbind
+#Also add rpcbind as an alias in /etc/services
+      sed -i''  '/sunrpc/s/\tportmapper/\trpcbind portmapper/g' /etc/services
+else
+# Initial installation
+    /bin/systemctl enable rpcbind.service >/dev/null 
+    /bin/systemctl start rpcbind.service
+#And just in case add rpcbind as an alias in /etc/services
+     sed -i''  '/sunrpc/s/\tportmapper/\trpcbind portmapper/g' /etc/services 2>&1 || :
+    fi
+fi
 %_post_service %{name}
 # restart running services depending on portmapper
 for service in amd autofs bootparamd clusternfs mcserv \
@@ -91,13 +112,14 @@ fi
 
 %files
 %doc AUTHORS COPYING ChangeLog README README.urpmi
-%{_initrddir}/rpcbind
 %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
 %config(noreplace) %{_sysconfdir}/apparmor.d/sbin.rpcbind
 /sbin/rpcbind
 /sbin/rpcinfo
 %{_mandir}/man8/*
 %dir %attr(0700,rpc,rpc) %{_localstatedir}/lib/%{name}
+%{_unitdir}/rpcbind.service
+%{_unitdir}/rpcbind.socket
 
 %changelog
 * Mon Feb 20 2012 abf
