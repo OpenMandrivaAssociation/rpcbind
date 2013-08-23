@@ -1,6 +1,6 @@
 Name:		rpcbind
-Version:	0.2.0
-Release:	9
+Version:	0.2.1
+Release:	1
 Summary:	Universal Addresses to RPC Program Number Mapper
 License:	BSD
 Group:		System/Servers
@@ -50,8 +50,8 @@ autoreconf -fi
 %install
 mkdir -p %{buildroot}%{_unitdir}
 install -d %{buildroot}%{_localstatedir}/lib/%{name}
-install -m755 src/rpcbind -D %{buildroot}/sbin/rpcbind
-install -m755 src/rpcinfo -D %{buildroot}/sbin/rpcinfo
+install -m755 rpcbind -D %{buildroot}/sbin/rpcbind
+install -m755 rpcinfo -D %{buildroot}/sbin/rpcinfo
 install -m644 %{SOURCE1} %{buildroot}%{_unitdir}
 install -m644 %{SOURCE4} %{buildroot}%{_unitdir}
 install -m644 rpcbind.sysconfig -D %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
