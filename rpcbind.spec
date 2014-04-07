@@ -69,22 +69,6 @@ install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
 
 %post 
-if [ $1 -gt 1 ] ; then 
-#Need to clean up old init setup
-    if [ -e /etc/init.d/rpcbind ]
-    then
-      /etc/init.d/rpcbind stop
-      /bin/rm -f /etc/init.d/rpcbind
-#Also add rpcbind as an alias in /etc/services
-      sed -i''  '/sunrpc/s/\tportmapper/\trpcbind portmapper/g' /etc/services
-else
-# Initial installation
-    /bin/systemctl enable rpcbind.service >/dev/null 
-    /bin/systemctl start rpcbind.service
-#And just in case add rpcbind as an alias in /etc/services
-     sed -i''  '/sunrpc/s/\tportmapper/\trpcbind portmapper/g' /etc/services 2>&1 || :
-    fi
-fi
 %_post_service %{name}
 # restart running services depending on portmapper
 for service in amd autofs bootparamd clusternfs mcserv \
