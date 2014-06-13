@@ -1,7 +1,7 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
 Version:	0.2.1
-Release:	5
+Release:	6
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
