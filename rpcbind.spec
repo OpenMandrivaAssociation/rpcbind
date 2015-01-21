@@ -1,7 +1,7 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
-Version:	0.2.1
-Release:	8
+Version:	0.2.2
+Release:	1
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
@@ -13,6 +13,7 @@ Source4:	rpcbind.socket
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
+BuildRequires:	pkgconfig(libsystemd)
 Requires(post,preun,postun):	rpm-helper
 
 %description
