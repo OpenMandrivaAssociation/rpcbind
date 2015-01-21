@@ -13,7 +13,7 @@ Source4:	rpcbind.socket
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
-Requires(post,preun):	rpm-helper
+Requires(post,preun,postun):	rpm-helper
 
 %description
 The rpcbind utility is a server that converts RPC program numbers into
@@ -32,7 +32,7 @@ autoreconf -fi
 
 %build
 %serverbuild
-%configure2_5x \
+%configure \
 	CFLAGS="%{optflags} -fpie" LDFLAGS="-pie" \
 	--enable-warmstarts \
 	--with-statedir="%{_localstatedir}/lib/%{name}" \
@@ -68,19 +68,14 @@ install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 %pre
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
 
-%post 
-%_post_service %{name}
-# restart running services depending on portmapper
-for service in amd autofs bootparamd clusternfs mcserv \
-		nfs-common nfs-server \
-		ypserv ypbind yppasswdd ypxfrd; do
-	if [ -f /var/lock/subsys/$service ]; then
-		/sbin/service $service restart > /dev/null 2>/dev/null || :
-	fi
-done
+%post
+%systemd_post rpcbind.service rpcbind.socket
 
 %preun
-%_preun_service %{name}
+%systemd_preun rpcbind.service rpcbind.socket
+
+%postun
+%systemd_postun_with_restart rpcbind.service rpcbind.socket
 
 %posttrans
 # if we have apparmor installed, reload if it's being used
@@ -98,4 +93,3 @@ fi
 %dir %attr(0700,rpc,rpc) %{_localstatedir}/lib/%{name}
 %{_unitdir}/rpcbind.service
 %{_unitdir}/rpcbind.socket
-
