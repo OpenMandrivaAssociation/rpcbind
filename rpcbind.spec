@@ -1,6 +1,6 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
-Version:	0.2.2
+Version:	0.2.3
 Release:	1
 License:	BSD
 Group:		System/Servers
@@ -69,14 +69,6 @@ install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 %pre
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
 
-%post
-%systemd_post rpcbind.service rpcbind.socket
-
-%preun
-%systemd_preun rpcbind.service rpcbind.socket
-
-%postun
-%systemd_postun_with_restart rpcbind.service rpcbind.socket
 
 %posttrans
 # if we have apparmor installed, reload if it's being used
