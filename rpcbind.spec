@@ -10,9 +10,11 @@ Source1:	rpcbind.service
 Source2:	rpcbind.sysconfig
 Source3:	sbin.rpcbind.apparmor
 Source4:	rpcbind.socket
+Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(libsystemd)
+BuildRequires:	pkgconfig(libsystemd-daemon)
 Requires(post,preun,postun):	rpm-helper
 
 %description
@@ -25,6 +27,7 @@ calls on a server on that machine.
 cp %{SOURCE1} .
 cp %{SOURCE2} .
 cp %{SOURCE4} .
+%apply_patches
 
 %build
 %serverbuild
@@ -33,7 +36,7 @@ cp %{SOURCE4} .
 	--enable-warmstarts \
 	--with-statedir="%{_localstatedir}/lib/%{name}" \
 	--with-rpcuser="rpc" \
-	--enable-debug
+	--systemdsystemunitdir=%{_unitdir}
 
 %make all
 
