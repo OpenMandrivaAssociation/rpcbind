@@ -36,7 +36,7 @@ cp %{SOURCE4} .
 	--enable-warmstarts \
 	--with-statedir="%{_localstatedir}/lib/%{name}" \
 	--with-rpcuser="rpc" \
-	--systemdsystemunitdir=%{_unitdir}
+	--with-systemdsystemunitdir=%{_unitdir}
 
 %make all
 
