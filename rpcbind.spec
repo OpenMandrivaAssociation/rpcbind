@@ -10,7 +10,6 @@ Source1:	rpcbind.service
 Source2:	rpcbind.sysconfig
 Source3:	sbin.rpcbind.apparmor
 Source4:	rpcbind.socket
-Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(libsystemd)
@@ -26,10 +25,6 @@ calls on a server on that machine.
 cp %{SOURCE1} .
 cp %{SOURCE2} .
 cp %{SOURCE4} .
-%patch0 -p1 -b .noyp~
-#fix build with new automake
-sed -i -e 's,AM_CONFIG_HEADER,AC_CONFIG_HEADERS,g' configure.*
-autoreconf -fi
 
 %build
 %serverbuild
