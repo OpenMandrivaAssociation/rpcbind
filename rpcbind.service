@@ -5,7 +5,7 @@ Requires=rpcbind.socket
 [Service]
 Type=forking
 EnvironmentFile=/etc/sysconfig/rpcbind
-ExecStart=/sbin/rpcbind -w ${RPCBIND_OPTIONS}
+ExecStart=/sbin/rpcbind ${RPCBIND_OPTIONS}
 
 [Install]
 Also=rpcbind.socket
