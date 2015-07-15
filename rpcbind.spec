@@ -1,7 +1,7 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
 Version:	0.2.3
-Release:	2
+Release:	4
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
@@ -64,6 +64,13 @@ EOF
 # apparmor profile
 install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 
+install -d %{buildroot}%{_tmpfilesdir}
+cat > %{buildroot}%{_tmpfilesdir}/rpcbind.conf << EOF
+d %{_localstatedir}/lib/%{name} 0700 root root - -
+f %{_localstatedir}/lib/%{name}/rpcbind.xdr 0600 root root - -
+f %{_localstatedir}/lib/%{name}/portmap.xdr 0600 root root - -
+EOF
+
 %pre
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
 
@@ -80,6 +87,7 @@ fi
 %config(noreplace) %{_sysconfdir}/apparmor.d/sbin.rpcbind
 /sbin/rpcbind
 /sbin/rpcinfo
+%{_tmpfilesdir}/rpcbind.conf
 %{_mandir}/man8/*
 %dir %attr(0700,rpc,rpc) %{_localstatedir}/lib/%{name}
 %{_unitdir}/rpcbind.service
