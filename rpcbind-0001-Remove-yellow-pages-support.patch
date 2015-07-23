@@ -12,21 +12,20 @@ Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
  src/security.c |   18 ------------------
  1 file changed, 18 deletions(-)
 
-diff --git a/src/security.c b/src/security.c
-index 0edeac6..c6c977f 100644
---- a/src/security.c
-+++ b/src/security.c
-@@ -23,9 +23,6 @@
+diff -Naur rpcbind-0.2.3/src/security.c rpcbind-0.2.3.tpg/src/security.c
+--- rpcbind-0.2.3/src/security.c	2015-04-27 14:07:43.000000000 +0000
++++ rpcbind-0.2.3.tpg/src/security.c	2015-05-12 20:20:58.729012356 +0000
+@@ -24,9 +24,6 @@
  #include <rpcsvc/mount.h>
  #include <rpcsvc/rquota.h>
  #include <rpcsvc/nfs_prot.h>
 -#include <rpcsvc/yp.h>
 -#include <rpcsvc/ypclnt.h>
 -#include <rpcsvc/yppasswd.h>
- 
- #include "rpcbind.h"
- 
-@@ -322,24 +319,9 @@ check_callit(SVCXPRT *xprt, struct r_rmtcall_args *args, int versnum /*__unused*
+ #else
+ # define MOUNTPROC_MNT	1
+ # define MOUNTPROC_UMNT	3
+@@ -325,24 +322,9 @@
  		    args->rmt_proc != MOUNTPROC_UMNT)
  			break;
  		goto deny;
@@ -51,6 +50,3 @@ index 0edeac6..c6c977f 100644
  	default:
  		break;
  	}
--- 
-1.7.9.5
-

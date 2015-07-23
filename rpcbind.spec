@@ -1,7 +1,7 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
-Version:	0.2.1
-Release:	5.1
+Version:	0.2.3
+Release:	0.1
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
@@ -13,6 +13,8 @@ Source4:	rpcbind.socket
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	quota
 BuildRequires:	pkgconfig(libtirpc)
+BuildRequires:	pkgconfig(libsystemd-daemon)
+BuildRequires:	pkgconfig(systemd)
 Requires(post,preun):	rpm-helper
 
 %description
@@ -25,6 +27,7 @@ calls on a server on that machine.
 cp %{SOURCE1} .
 cp %{SOURCE2} .
 cp %{SOURCE4} .
+
 %patch0 -p1 -b .noyp~
 #fix build with new automake
 sed -i -e 's,AM_CONFIG_HEADER,AC_CONFIG_HEADERS,g' configure.*
@@ -37,7 +40,7 @@ autoreconf -fi
 	--enable-warmstarts \
 	--with-statedir="%{_localstatedir}/lib/%{name}" \
 	--with-rpcuser="rpc" \
-	--enable-debug
+	--with-systemdsystemunitdir=%{_unitdir}
 
 %make all
 
@@ -78,7 +81,8 @@ EOF
 
 %post
 %tmpfiles_create rpcbind.conf
-%_post_service %{name}
+%_post_service %{name}.socket
+
 # restart running services depending on portmapper
 for service in amd autofs bootparamd clusternfs mcserv \
 		nfs-common nfs-server \
@@ -89,7 +93,7 @@ for service in amd autofs bootparamd clusternfs mcserv \
 done
 
 %preun
-%_preun_service %{name}
+%_preun_service %{name}.socket
 
 %posttrans
 # if we have apparmor installed, reload if it's being used
