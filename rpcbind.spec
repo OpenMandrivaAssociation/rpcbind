@@ -81,7 +81,7 @@ EOF
 
 %post
 %tmpfiles_create rpcbind.conf
-%_post_service %{name}.socket
+%_post_service %{name}
 
 # restart running services depending on portmapper
 for service in amd autofs bootparamd clusternfs mcserv \
@@ -93,7 +93,7 @@ for service in amd autofs bootparamd clusternfs mcserv \
 done
 
 %preun
-%_preun_service %{name}.socket
+%_preun_service %{name}
 
 %posttrans
 # if we have apparmor installed, reload if it's being used
