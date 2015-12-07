@@ -11,6 +11,9 @@ Source2:	rpcbind.sysconfig
 Source3:	sbin.rpcbind.apparmor
 Source4:	rpcbind.socket
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
+Patch1:		rpcbind-0.2.3-pmap_callit.diff
+Patch2:		rpcbind-0.2.3-rpcbind-socket.patch
+Patch3:		rpcbind-0.2.3-xp_auth.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(libsystemd)
