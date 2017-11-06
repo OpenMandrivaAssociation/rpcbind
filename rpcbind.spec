@@ -17,7 +17,6 @@ Patch3:		rpcbind-0.2.3-xp_auth.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(libsystemd)
-BuildRequires:	pkgconfig(libsystemd-daemon)
 Requires(post,preun,postun):	rpm-helper
 
 %description
@@ -39,7 +38,7 @@ cp %{SOURCE4} .
 	--enable-warmstarts \
 	--with-statedir="%{_localstatedir}/lib/%{name}" \
 	--with-rpcuser="rpc" \
-	--with-systemdsystemunitdir=%{_unitdir}
+	--with-systemdsystemunitdir=%{_systemunitdir}
 
 %make all
 
@@ -74,6 +73,11 @@ f %{_localstatedir}/lib/%{name}/rpcbind.xdr 0600 root root - -
 f %{_localstatedir}/lib/%{name}/portmap.xdr 0600 root root - -
 EOF
 
+install -d %{buildroot}%{_presetdir}
+cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
+enable rpcbind.socket
+EOF
+
 %pre
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
 
@@ -95,3 +99,4 @@ fi
 %dir %attr(0700,rpc,rpc) %{_localstatedir}/lib/%{name}
 %{_unitdir}/rpcbind.service
 %{_unitdir}/rpcbind.socket
+%{_presetdir}/86-%{name}.preset
