@@ -11,13 +11,11 @@ Source2:	rpcbind.sysconfig
 Source3:	sbin.rpcbind.apparmor
 Source4:	rpcbind.socket
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
-Patch1:		rpcbind-0.2.3-pmap_callit.diff
-Patch2:		rpcbind-0.2.3-rpcbind-socket.patch
-Patch3:		rpcbind-0.2.3-xp_auth.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
-BuildRequires:	pkgconfig(libsystemd)
-Requires(post,preun,postun):	rpm-helper
+BuildRequires:	systemd-macros
+BuildRequires:	rpm-helper
+Requires(pre):	rpm-helper
 
 %description
 The rpcbind utility is a server that converts RPC program numbers into
@@ -25,11 +23,10 @@ universal addresses.  It must be running on the host to be able to make RPC
 calls on a server on that machine.
 
 %prep
-%setup -q
+%autosetup -p1
 cp %{SOURCE1} .
 cp %{SOURCE2} .
 cp %{SOURCE4} .
-%apply_patches
 
 %build
 %serverbuild
@@ -38,9 +35,9 @@ cp %{SOURCE4} .
 	--enable-warmstarts \
 	--with-statedir="%{_localstatedir}/lib/%{name}" \
 	--with-rpcuser="rpc" \
-	--with-systemdsystemunitdir=%{_systemunitdir}
+	--with-systemdsystemunitdir=%{_unitdir}
 
-%make all
+%make_build all
 
 %install
 mkdir -p %{buildroot}%{_unitdir}
@@ -52,16 +49,6 @@ install -m644 %{SOURCE4} %{buildroot}%{_unitdir}
 install -m644 rpcbind.sysconfig -D %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
 install -m644 man/rpcbind.8 -D %{buildroot}%{_mandir}/man8/rpcbind.8
 install -m644 man/rpcinfo.8 -D %{buildroot}%{_mandir}/man8/rpcbind-rpcinfo.8
-
-cat > README.urpmi << EOF
-
-Because of file conflicts with glibc the following files has been renamed:
-
-rpcinfo.8 -> rpcbind-rpcinfo.8
-
-glibc also provides rpcinfo as /usr/sbin/rpcinfo, so the rpcinfo program
-provided with this package is put in /sbin/rpcinfo
-EOF
 
 # apparmor profile
 install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
@@ -85,11 +72,11 @@ EOF
 %posttrans
 # if we have apparmor installed, reload if it's being used
 if [ -x /sbin/apparmor_parser ]; then
-	/sbin/service apparmor condreload
+    /sbin/service apparmor condreload
 fi
 
 %files
-%doc AUTHORS COPYING ChangeLog README README.urpmi
+%doc AUTHORS COPYING ChangeLog
 %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
 %config(noreplace) %{_sysconfdir}/apparmor.d/sbin.rpcbind
 /sbin/rpcbind
