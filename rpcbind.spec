@@ -13,6 +13,7 @@ Source4:	rpcbind.socket
 Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
+BuildRequires:	pkgconfig(libsystemd)
 BuildRequires:	systemd-macros
 BuildRequires:	rpm-helper
 Requires(pre):	rpm-helper
