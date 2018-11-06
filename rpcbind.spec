@@ -78,7 +78,7 @@ fi
 /sbin/rpcinfo
 %{_tmpfilesdir}/rpcbind.conf
 %{_mandir}/man8/*
-%dir %attr(0700,rpc,rpc) %{_localstatedir}/lib/%{name}
+%dir %attr(0700,rpc,rpc) %{_rundir}/rpcbind
 %{_unitdir}/rpcbind.service
 %{_unitdir}/rpcbind.socket
 %{_presetdir}/86-%{name}.preset
