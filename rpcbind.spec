@@ -1,16 +1,20 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
-Version:	0.2.4
-Release:	3
+Version:	1.2.5
+Release:	1
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
-Source1:	rpcbind.service
-Source2:	rpcbind.sysconfig
-Source3:	sbin.rpcbind.apparmor
-Source4:	rpcbind.socket
-Patch0:		rpcbind-0001-Remove-yellow-pages-support.patch
+Source1:	rpcbind.sysconfig
+Source2:	sbin.rpcbind.apparmor
+
+Patch0:		rpcbind-1.2.5-rpcinfo-bufoverflow.patch
+Patch1:		rpcbind-0.2.3-systemd-envfile.patch
+Patch2:		rpcbind-0.2.3-systemd-tmpfiles.patch
+Patch3:		rpcbind-0.2.4-runstatdir.patch
+Patch4:		rpcbind-0.2.4-systemd-service.patch
+Patch5:		rpcbind-0.2.4-systemd-rundir.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(libsystemd)
@@ -25,9 +29,7 @@ calls on a server on that machine.
 
 %prep
 %autosetup -p1
-cp %{SOURCE1} .
-cp %{SOURCE2} .
-cp %{SOURCE4} .
+cp -f %{SOURCE1} .
 
 %build
 %serverbuild
@@ -41,25 +43,17 @@ cp %{SOURCE4} .
 %make_build all
 
 %install
+mkdir -p %{buildroot}{%{_sbindir},%{_bindir},%{_sysconfdir}/sysconfig}
 mkdir -p %{buildroot}%{_unitdir}
-install -d %{buildroot}%{_localstatedir}/lib/%{name}
-install -m755 rpcbind -D %{buildroot}/sbin/rpcbind
-install -m755 rpcinfo -D %{buildroot}/sbin/rpcinfo
-install -m644 %{SOURCE1} %{buildroot}%{_unitdir}
-install -m644 %{SOURCE4} %{buildroot}%{_unitdir}
-install -m644 rpcbind.sysconfig -D %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
-install -m644 man/rpcbind.8 -D %{buildroot}%{_mandir}/man8/rpcbind.8
-install -m644 man/rpcinfo.8 -D %{buildroot}%{_mandir}/man8/rpcbind-rpcinfo.8
+mkdir -p %{buildroot}%{_tmpfilesdir}
+mkdir -p %{buildroot}%{_mandir}/man8
+mkdir -p %{buildroot}%{rpcbind_state_dir}
+%make_install
+
+install -m644 %{SOURCE1} -D %{buildroot}%{_sysconfdir}/sysconfig/rpcbind
 
 # apparmor profile
-install -m644 %{SOURCE3} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
-
-install -d %{buildroot}%{_tmpfilesdir}
-cat > %{buildroot}%{_tmpfilesdir}/rpcbind.conf << EOF
-d %{_localstatedir}/lib/%{name} 0700 root root - -
-f %{_localstatedir}/lib/%{name}/rpcbind.xdr 0600 root root - -
-f %{_localstatedir}/lib/%{name}/portmap.xdr 0600 root root - -
-EOF
+install -m644 %{SOURCE2} -D %{buildroot}%{_sysconfdir}/apparmor.d/sbin.rpcbind
 
 install -d %{buildroot}%{_presetdir}
 cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
@@ -68,7 +62,6 @@ EOF
 
 %pre
 %_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
-
 
 %posttrans
 # if we have apparmor installed, reload if it's being used
