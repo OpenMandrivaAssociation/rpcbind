@@ -1,0 +1,35 @@
+diff -up rpcbind-0.2.4/src/rpcbind.c.orig rpcbind-0.2.4/src/rpcbind.c
+--- rpcbind-0.2.4/src/rpcbind.c.orig	2017-03-21 10:12:35.005190509 -0400
++++ rpcbind-0.2.4/src/rpcbind.c	2017-03-21 10:36:45.510507649 -0400
+@@ -144,6 +144,8 @@ static void rbllist_add(rpcprog_t, rpcve
+ static void terminate(int);
+ static void parseargs(int, char *[]);
+ 
++char *systemdtmp = "/usr/bin/systemd-tmpfiles --create rpcbind.conf";
++
+ int
+ main(int argc, char *argv[])
+ {
+@@ -151,13 +153,21 @@ main(int argc, char *argv[])
+ 	void *nc_handle;	/* Net config handle */
+ 	struct rlimit rl;
+ 	int maxrec = RPC_MAXDATASIZE;
++	int once = 1;
+ 
+ 	parseargs(argc, argv);
+ 
++tryagain:
+ 	/* Check that another rpcbind isn't already running. */
+ 	if ((rpcbindlockfd = (open(RPCBINDDLOCK,
+-	    O_RDONLY|O_CREAT, 0444))) == -1)
++	    O_RDONLY|O_CREAT, 0444))) == -1) {
++		if (once) {
++			once = system(systemdtmp); /* set once to avoid a warning */
++			once = 0;
++			goto tryagain; 
++		}
+ 		err(1, "%s", RPCBINDDLOCK);
++	}
+ 
+ 	if(flock(rpcbindlockfd, LOCK_EX|LOCK_NB) == -1 && errno == EWOULDBLOCK)
+ 		errx(1, "another rpcbind is already running. Aborting");
