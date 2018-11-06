@@ -39,6 +39,7 @@ cp -f %{SOURCE1} .
 	--with-statedir="%{_rundir}/rpcbind" \
 	--with-rpcuser="rpc" \
 	--with-systemdsystemunitdir=%{_unitdir} \
+	--with-systemdtmpfilesdir=%{_tmpfilesdir} \
 	--sbindir=/sbin
 
 %make_build all
@@ -75,10 +76,9 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
 %config(noreplace) %{_sysconfdir}/apparmor.d/sbin.rpcbind
 /sbin/rpcbind
-/sbin/rpcinfo
+%{_bindir}/rpcinfo
 %{_tmpfilesdir}/rpcbind.conf
 %{_mandir}/man8/*
-%dir %attr(0700,rpc,rpc) %{_rundir}/rpcbind
 %{_unitdir}/rpcbind.service
 %{_unitdir}/rpcbind.socket
 %{_presetdir}/86-%{name}.preset
