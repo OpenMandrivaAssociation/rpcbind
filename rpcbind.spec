@@ -36,14 +36,15 @@ cp -f %{SOURCE1} .
 %configure \
 	CFLAGS="%{optflags} -fpie" LDFLAGS="-pie" \
 	--enable-warmstarts \
-	--with-statedir="%{_localstatedir}/lib/%{name}" \
+	--with-statedir="%{_rundir}/rpcbind" \
 	--with-rpcuser="rpc" \
-	--with-systemdsystemunitdir=%{_unitdir}
+	--with-systemdsystemunitdir=%{_unitdir} \
+	--sbindir=/sbin
 
 %make_build all
 
 %install
-mkdir -p %{buildroot}{%{_sbindir},%{_bindir},%{_sysconfdir}/sysconfig}
+mkdir -p %{buildroot}{/sbin,%{_bindir},%{_sysconfdir}/sysconfig}
 mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_tmpfilesdir}
 mkdir -p %{buildroot}%{_mandir}/man8
