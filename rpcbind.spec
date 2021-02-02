@@ -1,7 +1,7 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
 Version:	1.2.5
-Release:	1
+Release:	2
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
@@ -70,6 +70,15 @@ EOF
 if [ -x /sbin/apparmor_parser ]; then
     /sbin/service apparmor condreload
 fi
+
+%post
+%systemd_post rpcbind.socket
+
+%preun
+%systemd_preun rpcbind.socket
+
+%postun
+%systemd_postun_with_restart rpcbind.socket
 
 %files
 %doc AUTHORS COPYING ChangeLog
