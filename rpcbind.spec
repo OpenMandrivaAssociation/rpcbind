@@ -1,14 +1,14 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
 Version:	1.2.5
-Release:	2
+Release:	3
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
 Source1:	rpcbind.sysconfig
 Source2:	sbin.rpcbind.apparmor
-
+Source3:	%{name}.sysusers
 Patch0:		rpcbind-1.2.5-rpcinfo-bufoverflow.patch
 Patch1:		rpcbind-0.2.3-systemd-envfile.patch
 Patch2:		rpcbind-0.2.3-systemd-tmpfiles.patch
@@ -18,9 +18,9 @@ Patch5:		rpcbind-0.2.4-systemd-rundir.patch
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(libsystemd)
-BuildRequires:	systemd-macros
-BuildRequires:	rpm-helper
-Requires(pre):	rpm-helper
+BuildRequires:	systemd-rpm-macros
+Requires(pre):	systemd
+%systemd_requires
 
 %description
 The rpcbind utility is a server that converts RPC program numbers into
@@ -62,8 +62,10 @@ cat > %{buildroot}%{_presetdir}/86-%{name}.preset << EOF
 enable rpcbind.socket
 EOF
 
+install -Dpm 644 %{SOURCE3} %{buildroot}%{_sysusersdir}/%{name}.conf
+
 %pre
-%_pre_useradd rpc %{_localstatedir}/lib/%{name} /sbin/nologin
+%sysusers_create_package %{name}.conf %{SOURCE3}
 
 %posttrans
 # if we have apparmor installed, reload if it's being used
@@ -91,3 +93,4 @@ fi
 %{_unitdir}/rpcbind.service
 %{_unitdir}/rpcbind.socket
 %{_presetdir}/86-%{name}.preset
+%{_sysusersdir}/%{name}.conf
