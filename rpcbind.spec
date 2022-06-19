@@ -1,7 +1,7 @@
 Summary:	Universal Addresses to RPC Program Number Mapper
 Name:		rpcbind
-Version:	1.2.5
-Release:	3
+Version:	1.2.6
+Release:	1
 License:	BSD
 Group:		System/Servers
 Url:		http://rpcbind.sourceforge.net/
@@ -9,7 +9,6 @@ Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
 Source1:	rpcbind.sysconfig
 Source2:	sbin.rpcbind.apparmor
 Source3:	%{name}.sysusers
-Patch0:		rpcbind-1.2.5-rpcinfo-bufoverflow.patch
 Patch1:		rpcbind-0.2.3-systemd-envfile.patch
 Patch2:		rpcbind-0.2.3-systemd-tmpfiles.patch
 Patch3:		rpcbind-0.2.4-runstatdir.patch
@@ -40,12 +39,11 @@ cp -f %{SOURCE1} .
 	--with-rpcuser="rpc" \
 	--with-systemdsystemunitdir=%{_unitdir} \
 	--with-systemdtmpfilesdir=%{_tmpfilesdir} \
-	--sbindir=/sbin
 
 %make_build all
 
 %install
-mkdir -p %{buildroot}{/sbin,%{_bindir},%{_sysconfdir}/sysconfig}
+mkdir -p %{buildroot}{%{_bindir},%{_sysconfdir}/sysconfig}
 mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_tmpfilesdir}
 mkdir -p %{buildroot}%{_mandir}/man8
@@ -70,7 +68,7 @@ install -Dpm 644 %{SOURCE3} %{buildroot}%{_sysusersdir}/%{name}.conf
 %posttrans
 # if we have apparmor installed, reload if it's being used
 if [ -x /sbin/apparmor_parser ]; then
-    /sbin/service apparmor condreload
+	/sbin/service apparmor condreload
 fi
 
 %post
@@ -86,7 +84,7 @@ fi
 %doc AUTHORS COPYING ChangeLog
 %config(noreplace) %{_sysconfdir}/sysconfig/rpcbind
 %config(noreplace) %{_sysconfdir}/apparmor.d/sbin.rpcbind
-/sbin/rpcbind
+%{_sbindir}/rpcbind
 %{_bindir}/rpcinfo
 %{_tmpfilesdir}/rpcbind.conf
 %{_mandir}/man8/*
