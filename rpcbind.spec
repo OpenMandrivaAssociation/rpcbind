@@ -4,7 +4,7 @@ Version:	1.2.6
 Release:	2
 License:	BSD
 Group:		System/Servers
-Url:		http://rpcbind.sourceforge.net/
+Url:		https://rpcbind.sourceforge.net/
 Source0:	http://downloads.sourceforge.net/rpcbind/%{name}-%{version}.tar.bz2
 Source1:	rpcbind.sysconfig
 Source2:	sbin.rpcbind.apparmor
