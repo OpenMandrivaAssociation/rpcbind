@@ -14,6 +14,11 @@ Patch2:		rpcbind-0.2.3-systemd-tmpfiles.patch
 Patch3:		rpcbind-0.2.4-runstatdir.patch
 Patch4:		rpcbind-0.2.4-systemd-service.patch
 Patch5:		rpcbind-0.2.4-systemd-rundir.patch
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	quota-devel
 BuildRequires:	pkgconfig(libtirpc)
 BuildRequires:	pkgconfig(libsystemd)
